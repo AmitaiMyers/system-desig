@@ -22,8 +22,8 @@ npm run preview    # serve the production build
 ```
 
 To install it on a phone, host `dist/` over HTTPS and use "Add to Home Screen".
-`.github/workflows/deploy.yml` publishes to GitHub Pages on every push to `main`
-(enable Pages → "GitHub Actions" in the repository settings first).
+`.github/workflows/deploy.yml` publishes to GitHub Pages on every push to the default branch
+(Settings → Pages → Source must be "GitHub Actions").
 
 ## How it is built
 

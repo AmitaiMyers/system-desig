@@ -2,7 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    # The repository's default branch is currently the claude/ branch; main is listed for after a rename.
+    branches: [main, claude/system-design-game-pwa-n5adym]
   workflow_dispatch:
 
 permissions:
@@ -29,6 +30,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
