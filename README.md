@@ -10,6 +10,9 @@ run a simulated day of traffic through it, and watch what breaks.
   clarify requirements → estimate → design → survive the incidents → real-world debrief.
 - **Learning loop:** post-mortem after every failed run, a quiz after every win, and a
   Codex of 35 concept cards with a "senior insight" each.
+- **Learn tab:** 8 subjects covering all the material, built around 24 diagrams — 16 of them
+  interactive (change a value, see the effect). Every Codex card links to its full explanation,
+  and every level brief opens with its concept diagram.
 
 ## Run it
 
@@ -31,7 +34,8 @@ To install it on a phone, host `dist/` over HTTPS and use "Add to Home Screen".
 src/engine/    Pure TypeScript simulation — no React. catalog.ts holds every tunable number.
 src/content/   Levels, case studies, quizzes and concept cards as typed data.
 src/state/     Progress in localStorage.
-src/ui/        React screens (lane diagram, bottom sheets, run playback, results).
+src/ui/        React UI: design tokens, primitives, the architecture diagram, learning
+               figures, run playback, level flow and screens (see docs/DESIGN_SYSTEM.md).
 tests/         Engine unit tests and balance tests (every level must fail as given,
                be winnable with 3 stars, and reject the shortcut it teaches against).
 ```

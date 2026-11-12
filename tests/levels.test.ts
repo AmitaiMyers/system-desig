@@ -4,6 +4,7 @@ import { describe, expect, test } from 'vitest';
 import { CAMPAIGN } from '../src/content/campaign';
 import { CASES } from '../src/content/cases';
 import { CARDS } from '../src/content/cards';
+import { TOPICS } from '../src/content/topics';
 import type { Level } from '../src/content/types';
 import { evaluate } from '../src/engine/score';
 import { simulate } from '../src/engine/simulate';
@@ -111,4 +112,9 @@ test('case studies have well-formed interview content', () => {
     expect(c.requirements.some((r) => r.good) && c.requirements.some((r) => !r.good)).toBe(true);
     for (const q of c.estimation) expect(q.options[q.answerIndex]).toBeDefined();
   }
+});
+
+test('every concept card is explained by exactly one Learn section', () => {
+  const explained = TOPICS.flatMap((topic) => topic.sections.flatMap((section) => section.cardIds));
+  expect([...explained].sort()).toEqual(CARDS.map((c) => c.id).sort());
 });

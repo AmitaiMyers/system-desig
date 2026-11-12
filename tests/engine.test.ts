@@ -36,6 +36,13 @@ describe('simulate', () => {
     expect(r.successRate).toBe(1);
     expect(r.dataLoss).toBe('zero');
   });
+  test('served requests add up to the successful requests on every tick', () => {
+    const r = simulate({ ...BUILD, cache: { nodes: 1 }, cdn: 'commercial' }, scenario({ peakRps: 9000, staticShare: 0.4 }));
+    for (const t of r.ticks) {
+      const served = t.served.cdn + t.served.objectStorage + t.served.app + t.served.cache + t.served.db;
+      expect(served).toBeCloseTo(t.okRps, 6);
+    }
+  });
   test('an overloaded app tier drops the excess', () => {
     const r = simulate(BUILD, scenario({ peakRps: 2 * 2 * APP_SIZES.medium.rps }));
     const peak = r.ticks[240];

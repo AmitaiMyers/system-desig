@@ -1,8 +1,9 @@
-# Scale or Fail — Design System (Phase 1)
+# Scale or Fail — Design System
 
 This defines the look, the interaction rules and the user journey for the front end.
-Phase 2 implements it. Where the current build already does something, it is marked
-**(exists)**; everything else is new work.
+It was written as Phase 1 and has since been implemented (see section 6 for what was
+built and what was left out). The **(exists)** markers and the "Today" column in 3.3
+describe the app *before* that implementation.
 
 ## 1. Design language: "Night Shift"
 
@@ -203,35 +204,55 @@ Brief ─► Build ─► Run ─► Review ─► Quiz ─► Debrief ─► ne
 | Motion | `prefers-reduced-motion` respected everywhere | Only on the node shake |
 | Text size | Layout holds at 200% text scaling; no fixed heights on text containers | Untested |
 
-## 4. Front-end architecture for Phase 2
+## 4. Front-end architecture
 
-The simulation engine and content stay untouched; this is a UI-layer change.
+The simulation engine gained only small additions (per-tick "served by" counts, incident
+flags, and a moment for each post-mortem finding); the rest is the UI layer.
 
 ```
 src/ui/
   tokens.css          All colour, type, spacing, radius and motion tokens as CSS variables
-  primitives/         Button, Stepper, Segmented, Switch, Sheet, Callout, Icon, Stars
-  diagram/            Diagram, Node, HeadroomBar, RequestFlow (particles)
-  run/                RunScreen, Timeline (chart + scrubbing), Hud, IncidentBanner
-  level/              Brief, Build, Review, Debrief, StepIndicator, TargetStrip
-  screens/            Map, Codex, CaseIntro
-  format.ts           The single source for money / rate / percent formatting
+  styles.css          Component styles; references tokens only
+  primitives/         Icon, controls (Stepper, Segmented, Switch, Slider, Stars), Sheet,
+                      Screen (frame, StepIndicator, TabBar, Callout), Rich (glossary + CardView)
+  diagram/            Diagram, nodes (model, headroom, trouble labels), RequestFlow (canvas)
+  figures/            Learning diagrams: drawing kit, static figures, interactive labs, registry
+  run/                RunScreen, Timeline (chart + scrubbing)
+  level/              LevelScreen, Build, Inspector, Review, Targets, buildDiff
+  screens/            Map + Codex, Learn + Topic, CaseIntro, Quiz
 ```
 
-- **Tokens first:** components reference tokens only; no raw hex or pixel values in
-  component styles. Changing the palette is a one-file change.
-- **Primitives own accessibility:** roles, labels, focus handling and states live in the
-  primitive, so screens cannot get them wrong.
-- **Plain CSS, no UI library:** the app is small and must stay fast and offline; the
-  primitives above are the whole kit.
-- **Request particles on a canvas layer** behind the nodes, driven by the tick data the
-  engine already produces. The DOM stays static during a run.
+- **Tokens first:** components reference tokens only. Changing the palette is a one-file change.
+- **Primitives own accessibility:** roles, labels, focus handling and states live in the primitive.
+- **Plain CSS, no UI library.**
+- **Request flow on a canvas** beside the nodes, driven by tick data from the engine.
+- Money and percentage formatting stay in `src/engine/score.ts`, the single source for both
+  the engine's result text and the UI.
 
-## 5. Order of work for Phase 2
+## 5. Learning diagrams and the Learn tab
 
-1. Tokens and primitives (including the accessible sheet, switch, radiogroup, stepper).
-2. Diagram: SVG icons, headroom bars, target strip, changed-since-last-run chips.
-3. Run: request particles, incident badges, pause / speed / scrub.
-4. Review: staged reveal, "Show me" links into the timeline.
-5. Journey: first-launch coach marks, step indicator, tab bar, in-place glossary.
-6. Desktop two-pane layout; reduced-motion and 200% text checks.
+- **Figures** (`src/ui/figures`) are SVG diagrams drawn with a small kit (box, cylinder,
+  arrow, meter). 8 are static; 16 are interactive "labs" with controls and a one-sentence
+  readout of what the current state means. Labs reuse the game's own numbers where they
+  exist (server sizes, bandwidth prices, latencies).
+- **Learn tab:** 8 subjects, 27 sections. Each section is a diagram plus a few paragraphs,
+  with its summary cards folded underneath and "Practice this" links to the levels that use it.
+- **Codex → Learn:** every concept card has a "Go deeper" link to the section that explains
+  it. A test enforces that each card belongs to exactly one section.
+- **Missions:** every level brief opens with its concept diagram and a link to the subject.
+- A subject opens *on top of* the current screen, so reading one mid-level loses nothing.
+
+## 6. What was implemented, and what was not
+
+Implemented: tokens and the "Night Shift" palette; SVG icon set; accessible sheet (dialog
+role, focus trap, Escape, swipe-down, focus return), switch, radio-group segmented control,
+labelled stepper; headroom bars; always-visible target strip; "since last run" chips; request
+flow; trouble badges; pause / speed / scrub; staged review reveal with "Show me" links;
+first-launch coach marks; step indicator; tab bar; tap-to-explain terms; desktop two-pane
+build screen; reduced-motion handling; rem-based type that holds at 200% text size.
+
+Not implemented or different from the plan:
+- Android vibration on incidents is in place but untested on a real device.
+- The run screen announces incidents to screen readers; it does not announce the final result
+  (the review screen's verdict is a status region instead).
+- No screen-reader or real-device testing was done; checks were automated browser runs only.

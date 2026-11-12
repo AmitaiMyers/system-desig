@@ -67,6 +67,7 @@ function successFindings(result: SimResult): Finding[] {
     const { title, why } = DROP_EXPLANATION[key];
     return {
       title,
+      tick: tick.tick,
       detail: `Worst at ${tickToClock(tick.tick)}: ${Math.round(tick.dropped[key]).toLocaleString()} req/s lost ${incidentContext(tick)}. ${why}`,
     };
   });
@@ -77,12 +78,14 @@ function latencyFindings(result: SimResult): Finding[] {
   if (result.remoteUserShare > 0.01) {
     findings.push({
       title: 'Users are far from your servers',
+      tick: null,
       detail: `${Math.round(result.remoteUserShare * 100)}% of users live in a region where you have no servers. Every request they make crosses an ocean (+100 ms). No amount of hardware in the wrong place fixes the speed of light.`,
     });
   }
   if (result.inlineJobLatencyMs > 0) {
     findings.push({
       title: 'Slow work runs inside the request',
+      tick: null,
       detail: `Some writes trigger heavy background work, and the user waits ${Math.round(result.inlineJobLatencyMs).toLocaleString()} ms while the app server does it. The user does not need that work finished before getting a response.`,
     });
   }
@@ -100,6 +103,7 @@ function latencyFindings(result: SimResult): Finding[] {
   for (const h of hot.filter((x) => x.value >= HIGH_UTILIZATION && x.value < OUTAGE_UTILIZATION)) {
     findings.push({
       title: `${h.name} ran hot`,
+      tick: h.tick.tick,
       detail: `Peak utilization was ${Math.round(h.value * 100)}% at ${tickToClock(h.tick.tick)} ${incidentContext(h.tick)}. Latency explodes as a component nears 100%: at 90% busy, requests wait about 10× longer than on an idle machine.`,
     });
   }
@@ -107,6 +111,7 @@ function latencyFindings(result: SimResult): Finding[] {
   if (coldest.cacheWarmth < 0.6) {
     findings.push({
       title: 'Cold cache',
+      tick: coldest.tick,
       detail: `At ${tickToClock(coldest.tick)} the cache was only ${Math.round(coldest.cacheWarmth * 100)}% warm. Every miss falls through to the database, which was sized for a warm cache.`,
     });
   }
@@ -128,6 +133,7 @@ function budgetFindings(result: SimResult): Finding[] {
   const advice = top.id in BUDGET_ADVICE ? BUDGET_ADVICE[top.id] : 'Look for capacity you are paying for but not using.';
   return [{
     title: 'Over budget',
+    tick: null,
     detail: `Your biggest cost is “${top.label}” at ${formatMoney(top.monthly)}/month (${Math.round((top.monthly / result.cost.total) * 100)}% of the bill). ${advice}`,
   }];
 }
@@ -142,12 +148,13 @@ const DATA_LOSS_FINDING: Record<DataLoss, string> = {
 function buildFindings(checks: SloCheck[], result: SimResult): Finding[] {
   const failed = (id: SloCheck['id']) => checks.some((c) => c.id === id && !c.pass);
   const findings: Finding[] = [];
-  if (failed('dataLoss')) findings.push({ title: 'Data was lost', detail: DATA_LOSS_FINDING[result.dataLoss] });
+  if (failed('dataLoss')) findings.push({ title: 'Data was lost', tick: null, detail: DATA_LOSS_FINDING[result.dataLoss] });
   if (failed('success')) findings.push(...successFindings(result));
   if (failed('p99')) findings.push(...latencyFindings(result));
   if (failed('queueDelay')) {
     findings.push({
       title: 'Background jobs piled up',
+      tick: result.ticks.reduce((worst, t) => (t.queueDelayMin > worst.queueDelayMin ? t : worst)).tick,
       detail: `The queue fell up to ${Math.round(result.maxQueueDelayMin)} minutes behind. Jobs arrive faster than the workers drain them. A queue absorbs a spike, but the backlog still has to be worked off.`,
     });
   }

@@ -75,6 +75,7 @@ export const CASES: CaseStudy[] = [
       },
       unlocked: ['appSize', 'dbSize', 'loadBalancer', 'cache', 'replicas', 'failover', 'shards'],
       initialBuild: FIRST_SKETCH,
+      lab: 'url-shortener',
       hint: 'Redirects are the same few answers asked over and over. Stateless servers behind a balancer, a cache in front of the store, and nothing that exists only once.',
       cardIds: ['clarify-requirements', 'back-of-envelope', 'url-shortener-design'],
       quiz: [
@@ -167,6 +168,7 @@ export const CASES: CaseStudy[] = [
       },
       unlocked: ['appSize', 'dbSize', 'loadBalancer', 'cache', 'replicas', 'failover', 'cdn', 'objectStorage', 'shards', 'queue'],
       initialBuild: FIRST_SKETCH,
+      lab: 'upload-pipeline',
       hint: 'Two separate paths. Playback: web servers return a URL, a CDN serves the bytes. Upload: raw video → queue → transcoding fleet → object storage.',
       cardIds: ['working-backwards', 'transcoding-pipeline', 'adaptive-bitrate'],
       quiz: [
@@ -276,6 +278,7 @@ export const CASES: CaseStudy[] = [
       },
       unlocked: ['appSize', 'dbSize', 'loadBalancer', 'cache', 'replicas', 'failover', 'cdn', 'ownCdn', 'objectStorage', 'shards', 'regions'],
       initialBuild: FIRST_SKETCH,
+      lab: 'egress-cost',
       hint: 'Everything before “play” is a multi-region, heavily cached control plane. Everything after “play” is bytes — and at this volume, look hard at what each CDN option costs.',
       cardIds: ['own-cdn', 'chaos-engineering', 'defend-your-design'],
       quiz: [

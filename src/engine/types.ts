@@ -98,7 +98,15 @@ export type TickResult = {
   /** Requests per second lost at each component during this tick. */
   dropped: DropCounts;
   activeIncidents: string[];
+  /** Successful requests per second, by the component that answered them. Sums to okRps. */
+  served: ServedCounts;
+  flags: TickFlags;
 };
+
+export type ServedCounts = { cdn: number; objectStorage: number; app: number; cache: number; db: number };
+
+/** What is broken right now, for labelling the diagram during a run. */
+export type TickFlags = { regionDown: boolean; appServerDown: boolean; primaryDown: boolean; hotKey: boolean };
 
 export type DropCounts = { app: number; dbRead: number; dbWrite: number; outage: number };
 
@@ -119,7 +127,8 @@ export type SimResult = {
 
 export type SloCheck = { id: 'p99' | 'success' | 'budget' | 'dataLoss' | 'queueDelay'; label: string; target: string; actual: string; pass: boolean };
 
-export type Finding = { title: string; detail: string };
+/** `tick` is the moment that best shows the problem, or null when it is not tied to one. */
+export type Finding = { title: string; detail: string; tick: number | null };
 
 export type Verdict = {
   checks: SloCheck[];

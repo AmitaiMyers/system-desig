@@ -69,6 +69,7 @@ export const CAMPAIGN: Level[] = [
     },
     unlocked: ['appSize'],
     initialBuild: SINGLE_BOX,
+    lab: 'latency-curve',
     hint: 'You have exactly one lever in this level: tap the server and look at its size.',
     cardIds: ['single-server', 'vertical-scaling', 'simplest-architecture'],
     quiz: [
@@ -101,6 +102,7 @@ export const CAMPAIGN: Level[] = [
     },
     unlocked: ['appSize', 'splitDb', 'dbSize'],
     initialBuild: { ...SINGLE_BOX, app: { size: 'large', count: 1 } },
+    lab: 'evolve',
     hint: 'Tap the database. It does not have to live on the app server — and then each tier can be sized on its own.',
     cardIds: ['separate-database', 'stateless'],
     quiz: [
@@ -147,6 +149,7 @@ export const CAMPAIGN: Level[] = [
       app: { size: 'xlarge', count: 1 },
       db: { ...SINGLE_BOX.db, colocated: false, size: 'large' },
     },
+    lab: 'n-plus-one',
     hint: 'One server = one point of failure. With a load balancer you can run several — but check what happens to the survivors when one dies.',
     cardIds: ['horizontal-scaling', 'load-balancer', 'overprovisioning'],
     quiz: [
@@ -195,6 +198,7 @@ export const CAMPAIGN: Level[] = [
       app: { size: 'medium', count: 12 },
       db: { ...SINGLE_BOX.db, colocated: false, size: 'large' },
     },
+    lab: 'cache',
     hint: 'A cache protects the database only while it is warm. Ask yourself how much of the cache you lose when one node restarts.',
     cardIds: ['caching', 'cache-cold-start', 'eviction-policies'],
     quiz: [
@@ -244,6 +248,7 @@ export const CAMPAIGN: Level[] = [
       cache: { nodes: 2 },
       db: { ...SINGLE_BOX.db, colocated: false, size: 'xlarge' },
     },
+    lab: 'failover',
     hint: 'Read replicas do two jobs at once: they answer reads, and one of them can be promoted when the primary dies.',
     cardIds: ['failover', 'read-replicas', 'replication-lag'],
     quiz: [
@@ -293,6 +298,7 @@ export const CAMPAIGN: Level[] = [
       cache: { nodes: 3 },
       db: { ...SINGLE_BOX.db, colocated: false, size: 'large', replicas: 2 },
     },
+    lab: 'cdn',
     hint: 'Look at the cost breakdown after a run. Then ask: should an app server ever touch an image at all?',
     cardIds: ['cdn', 'object-storage', 'bandwidth-cost'],
     quiz: [
@@ -344,6 +350,7 @@ export const CAMPAIGN: Level[] = [
       cdn: 'commercial',
       objectStorage: true,
     },
+    lab: 'shards',
     hint: 'Sharding splits writes across several primaries. The shard key decides which trade-off you live with — try both.',
     cardIds: ['sharding', 'hot-shard', 'nosql-denormalization', 'cap-theorem'],
     quiz: [
@@ -404,6 +411,7 @@ export const CAMPAIGN: Level[] = [
       cdn: 'commercial',
       objectStorage: true,
     },
+    lab: 'backlog',
     hint: 'The user needs “your post is saved”, not “all notifications are sent”. Workers do not have to be sized for the worst half hour — only fast enough to catch up in time.',
     cardIds: ['message-queue', 'backpressure'],
     quiz: [
@@ -462,6 +470,7 @@ export const CAMPAIGN: Level[] = [
       objectStorage: true,
       queue: { enabled: true, workers: 100 },
     },
+    lab: 'regions',
     hint: 'All counts are per region: three regions means three copies of the stack, so each copy can be much smaller. Size it so two regions can carry the world.',
     cardIds: ['things-that-fail', 'geo-routing', 'sla-nines'],
     quiz: [

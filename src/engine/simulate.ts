@@ -159,6 +159,8 @@ function simulateTick(build: Build, workload: Workload, incidents: Incident[], t
         tick, rps: totalRps, okRps: cdnRps, p99Ms: LATENCY.cdnEdge,
         utilization: { app: SATURATED_UTILIZATION, cache: 0, dbRead: 0, dbWrite: 0, workers: 0 },
         cacheWarmth: state.cacheWarmth, queueDelayMin: 0, dropped, activeIncidents,
+        served: { cdn: cdnRps, objectStorage: 0, app: 0, cache: 0, db: 0 },
+        flags: { regionDown: true, appServerDown: false, primaryDown: false, hotKey: false },
       },
       classes, cdnRps, originStaticRps: 0,
     };
@@ -277,6 +279,14 @@ function simulateTick(build: Build, workload: Workload, incidents: Incident[], t
         workers: workerUtil,
       },
       cacheWarmth: warmthBefore, queueDelayMin, dropped, activeIncidents,
+      served: {
+        cdn: cdnRps,
+        objectStorage: build.objectStorage ? originStatic : 0,
+        app: build.objectStorage ? 0 : appStatic * appOk,
+        cache: readsAtCache * hitRate,
+        db: dbReadsOk + writesOk,
+      },
+      flags: { regionDown, appServerDown: has('appServerDown'), primaryDown, hotKey: has('hotKey') && build.db.shards > 1 },
     },
     classes, cdnRps, originStaticRps: originStatic,
   };
