@@ -15,6 +15,27 @@ type Reference = { solution: BuildChange; wrong: Record<string, BuildChange> };
 
 const fleet = (count: number) => ({ size: 'medium' as const, count });
 
+type Design = { app: number; cache: number; size: Build['db']['size']; replicas?: number; shards?: number; shardKey?: string; failover?: Build['db']['failover']; workers?: number };
+
+/** A load-balanced medium fleet with the given data tier; a queue is added when `workers` is given. */
+function designed(initial: Build, d: Design): Build {
+  return {
+    ...initial,
+    loadBalancer: true,
+    app: fleet(d.app),
+    cache: { nodes: d.cache },
+    db: {
+      ...initial.db,
+      size: d.size,
+      replicas: d.replicas === undefined ? 0 : d.replicas,
+      shards: d.shards === undefined ? 1 : d.shards,
+      shardKey: d.shardKey === undefined ? initial.db.shardKey : d.shardKey,
+      failover: d.failover === undefined ? 'none' : d.failover,
+    },
+    queue: d.workers === undefined ? initial.queue : { enabled: true, workers: d.workers },
+  };
+}
+
 const REFERENCE: Record<string, Reference> = {
   'hello-world': {
     solution: (i) => ({ ...i, app: fleet(1) }),
@@ -70,6 +91,33 @@ const REFERENCE: Record<string, Reference> = {
     wrong: {
       'no CDN': (i) => ({ ...i, loadBalancer: true, app: fleet(60), cache: { nodes: 3 }, db: { ...i.db, size: 'large', replicas: 2 }, objectStorage: true, queue: { enabled: true, workers: 1500 } }),
       'transcode inside the request': (i) => ({ ...i, loadBalancer: true, app: fleet(400), cache: { nodes: 3 }, db: { ...i.db, size: 'large', replicas: 2 }, cdn: 'commercial', objectStorage: true }),
+    },
+  },
+  'case-restaurant': {
+    solution: (i) => designed(i, { app: 7, cache: 2, size: 'large', failover: 'hot', workers: 3 }),
+    wrong: {
+      'replica instead of a hot standby': (i) => designed(i, { app: 7, cache: 2, size: 'large', replicas: 1, workers: 3 }),
+      'SMS sent inside the request': (i) => designed(i, { app: 9, cache: 2, size: 'large', failover: 'hot' }),
+    },
+  },
+  'case-crawler': {
+    solution: (i) => designed(i, { app: 12, cache: 1, size: 'large', shards: 4, shardKey: 'id', failover: 'cold', workers: 90 }),
+    wrong: {
+      'no backup at all': (i) => designed(i, { app: 12, cache: 1, size: 'large', shards: 4, shardKey: 'id', workers: 130 }),
+      'domain key on small shards': (i) => designed(i, { app: 12, cache: 1, size: 'medium', shards: 8, shardKey: 'domain', failover: 'cold', workers: 130 }),
+    },
+  },
+  'case-top-sellers': {
+    solution: (i) => designed(i, { app: 80, cache: 8, size: 'large', replicas: 2, workers: 10 }),
+    wrong: {
+      'two cache nodes': (i) => designed(i, { app: 95, cache: 2, size: 'large', replicas: 2, workers: 10 }),
+    },
+  },
+  'case-search': {
+    solution: (i) => designed(i, { app: 40, cache: 3, size: 'xlarge', shards: 2, replicas: 1, shardKey: 'id', workers: 45 }),
+    wrong: {
+      'keyword partitioning on small shards': (i) => designed(i, { app: 40, cache: 3, size: 'medium', shards: 16, replicas: 2, shardKey: 'term', workers: 45 }),
+      'too few indexing workers': (i) => designed(i, { app: 40, cache: 3, size: 'large', shards: 5, replicas: 3, shardKey: 'id', workers: 30 }),
     },
   },
   'case-netflix': {

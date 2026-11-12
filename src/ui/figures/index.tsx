@@ -2,8 +2,9 @@
 import type { ReactNode } from 'react';
 import type { FigureId } from '../../content/types';
 import { CapLab, EvolveLab, FailoverLab, LatencyCurveLab, NPlusOneLab, ScaleOutLab, ShardsLab } from './labsScaling';
+import { DecayLab, InvertedIndexLab } from './labsDesigns';
 import { AbrLab, BacklogLab, CacheLab, CdnLab, EgressCostLab, EstimatorLab, LruLab, NinesLab, RegionsLab } from './labsSystems';
-import { BlastRadiusFigure, DenormalizeFigure, InterviewFlowFigure, ObjectStorageFigure, QueueFigure, ReplicationFigure, UploadPipelineFigure, UrlShortenerFigure } from './static';
+import { BlastRadiusFigure, CrawlerFigure, DenormalizeFigure, InterviewFlowFigure, ObjectStorageFigure, QueueFigure, ReplicationFigure, ReservationFigure, UploadPipelineFigure, UrlShortenerFigure } from './static';
 
 type Entry = { render: () => ReactNode; interactive: boolean };
 
@@ -35,6 +36,10 @@ const FIGURES: Record<FigureId, Entry> = {
   'interview-flow': drawing(InterviewFlowFigure),
   estimator: lab(EstimatorLab),
   'url-shortener': drawing(UrlShortenerFigure),
+  reservation: drawing(ReservationFigure),
+  crawler: drawing(CrawlerFigure),
+  decay: lab(DecayLab),
+  'inverted-index': lab(InvertedIndexLab),
 };
 
 export function Figure({ id }: { id: FigureId }) {

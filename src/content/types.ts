@@ -25,7 +25,8 @@ export type FigureId =
   | 'cdn' | 'object-storage' | 'egress-cost' | 'abr'
   | 'queue' | 'backlog' | 'upload-pipeline'
   | 'blast-radius' | 'regions' | 'nines'
-  | 'interview-flow' | 'estimator' | 'url-shortener';
+  | 'interview-flow' | 'estimator' | 'url-shortener'
+  | 'reservation' | 'crawler' | 'decay' | 'inverted-index';
 
 export type QuizQuestion = {
   question: string;
@@ -85,7 +86,7 @@ export type ConceptCard = {
   source: string;
 };
 
-export type TopicId = 'scaling' | 'database' | 'sharding' | 'caching' | 'delivery' | 'async' | 'resilience' | 'interview';
+export type TopicId = 'scaling' | 'database' | 'sharding' | 'caching' | 'delivery' | 'async' | 'resilience' | 'interview' | 'designs';
 
 export type TopicSection = {
   heading: string;

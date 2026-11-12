@@ -36,6 +36,12 @@ export const SINGLE_BOX: Build = {
   queue: { enabled: false, workers: 0 },
 };
 
+/** The naive whiteboard sketch every case study starts from: one web server, one database. */
+export const FIRST_SKETCH: Build = {
+  ...SINGLE_BOX,
+  db: { ...SINGLE_BOX.db, colocated: false, shardKey: 'id' },
+};
+
 export const FEED_SHARD_KEYS: ShardKeyOption[] = [
   {
     id: 'user_id',

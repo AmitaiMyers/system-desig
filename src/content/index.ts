@@ -9,7 +9,11 @@ export { CAMPAIGN, CARDS, CASES, TOPICS };
 /** Campaign level that must be beaten before each case study opens. */
 export const CASE_PREREQUISITE: Record<string, string> = {
   'url-shortener': 'replicas',
+  restaurant: 'queues',
+  crawler: 'queues',
+  'top-sellers': 'queues',
   youtube: 'queues',
+  search: 'queues',
   netflix: 'region-down',
 };
 

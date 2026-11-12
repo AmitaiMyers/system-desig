@@ -1,16 +1,14 @@
 // Classic interview case studies, played as: clarify → estimate → design → survive.
 // Interview flow follows Frank Kane's mock interviews; real-world details are cited per case.
 
-import type { Build } from '../engine/types';
-import { at, SINGLE_BOX } from './campaign';
+import { at, FIRST_SKETCH } from './campaign';
+import { DECK_CASES } from './casesDeck';
 import type { CaseStudy } from './types';
 
-const FIRST_SKETCH: Build = {
-  ...SINGLE_BOX,
-  db: { ...SINGLE_BOX.db, colocated: false, shardKey: 'id' },
-};
+/** Order on the map: roughly by difficulty, following the source deck. */
+const CASE_ORDER = ['url-shortener', 'restaurant', 'crawler', 'top-sellers', 'youtube', 'search', 'netflix'];
 
-export const CASES: CaseStudy[] = [
+const CORE_CASES: CaseStudy[] = [
   {
     id: 'url-shortener',
     title: 'Design a URL Shortener',
@@ -332,3 +330,9 @@ export const CASES: CaseStudy[] = [
     ],
   },
 ];
+
+export const CASES: CaseStudy[] = CASE_ORDER.map((id) => {
+  const found = [...CORE_CASES, ...DECK_CASES].find((c) => c.id === id);
+  if (found === undefined) throw new Error(`Case study "${id}" is listed in CASE_ORDER but not defined`);
+  return found;
+});

@@ -232,10 +232,10 @@ src/ui/
 ## 5. Learning diagrams and the Learn tab
 
 - **Figures** (`src/ui/figures`) are SVG diagrams drawn with a small kit (box, cylinder,
-  arrow, meter). 8 are static; 16 are interactive "labs" with controls and a one-sentence
+  arrow, meter). 10 are static; 18 are interactive "labs" with controls and a one-sentence
   readout of what the current state means. Labs reuse the game's own numbers where they
   exist (server sizes, bandwidth prices, latencies).
-- **Learn tab:** 8 subjects, 27 sections. Each section is a diagram plus a few paragraphs,
+- **Learn tab:** 9 subjects, 31 sections. Each section is a diagram plus a few paragraphs,
   with its summary cards folded underneath and "Practice this" links to the levels that use it.
 - **Codex → Learn:** every concept card has a "Go deeper" link to the section that explains
   it. A test enforces that each card belongs to exactly one section.

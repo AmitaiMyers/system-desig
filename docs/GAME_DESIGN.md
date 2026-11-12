@@ -14,7 +14,7 @@ building architectures and watching them survive (or not) real traffic.
 | Win condition | Meet SLOs (p99 latency, success rate, data loss, job delay) **within a monthly budget** |
 | Incidents | Scripted per level, each one tests the level's concept |
 | Feedback | Post-mortem on failure, concept cards, post-level quiz, 1–3 star rating |
-| Content | 9-level growth campaign + 3 interview case studies (URL shortener, YouTube, Netflix) |
+| Content | 9-level growth campaign + 7 interview case studies |
 | AI interviewer | Not built — a later phase (Claude API grades free-form answers) |
 | Language | English |
 | Stack | React + TypeScript + Vite + vite-plugin-pwa, Vitest |
@@ -93,6 +93,10 @@ All tunable numbers live in `src/engine/catalog.ts`.
 | URL shortener | 40k req/s, 99% reads | Cache + stateless fleet + replicated store; viral link, cache restart, primary failure |
 | YouTube | 300k req/s, 70% video | CDN + object storage for playback; queue + transcoding fleet for uploads |
 | Netflix | 400k req/s, 80% video, 3 continents | Own CDN economics, multi-region control plane, chaos drill, release spike |
+| Restaurant reservations | 3k req/s, bookings must never be lost | Hot standby for zero data loss, SMS through a queue, Valentine's Day spike |
+| Web crawler | 20k URL operations/s, every write a job | Sharded URL store (domain vs URL key), worker sizing, cold backup is enough |
+| Top-sellers | 50k req/s, 98% cacheable | Precompute + cache, cold cache during Black Friday |
+| Search engine | 60k req/s, queries fan out | Index partitioned by document vs keyword, replicas per shard, indexing queue |
 
 ## 7. Learning content
 
@@ -111,5 +115,4 @@ it was designed to teach against. `tests/engine.test.ts` covers the engine rules
 ## 9. Possible next steps
 
 - AI interviewer mode for free-form answers.
-- More cases from the source deck: restaurant reservations, web crawler, top-sellers, search engine.
 - Cache TTL / staleness, rate limiting, consistent hashing as their own mechanics.

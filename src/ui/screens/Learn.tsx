@@ -17,6 +17,7 @@ const TOPIC_ICON: Record<TopicId, IconName> = {
   async: 'queue',
   resilience: 'globe',
   interview: 'mic',
+  designs: 'map',
 };
 
 export function LearnScreen({ onOpenTopic, onGoTab }: { onOpenTopic: (topicId: TopicId) => void; onGoTab: (tab: HomeTab) => void }) {

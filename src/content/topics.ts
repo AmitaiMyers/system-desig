@@ -326,4 +326,51 @@ export const TOPICS: Topic[] = [
       },
     ],
   },
+  {
+    id: 'designs',
+    title: 'Classic designs, worked',
+    summary: 'Four interview classics from start to finish: reservations, a web crawler, top-sellers and a search engine.',
+    sections: [
+      {
+        heading: 'A restaurant reservation system',
+        paragraphs: [
+          'Work backwards from the diner: choose a restaurant and party size, see available times, lock one in, get a confirmation, change or cancel. The restaurant is a customer too, and needs to configure tables, hold some back for walk-ins, and contact guests.',
+          'Sketch the data early. Three records carry the system: reservations, restaurants and customers. Looking at availability is a read that many people repeat and that may be a little stale, so it can be cached. Taking a slot is different: it must be a single consistent write, because two parties booked on one table is the one failure nobody forgives.',
+          'That consistency requirement is why this design wants transactions and a standby that has every confirmed write. Sending the confirmation message is slow and not part of the booking, so it goes to a queue.',
+        ],
+        figure: 'reservation',
+        cardIds: ['reservation-design'],
+      },
+      {
+        heading: 'A web crawler',
+        paragraphs: [
+          'A crawler has no end users, so the questions are about scope: the whole web or a few sites, how often to revisit, whether to store pages, and what the crawl is for.',
+          'The core is a loop around a queue. URLs wait in a queue; downloaders fetch pages and store them; links are extracted, normalized and filtered; the new URLs go back into the queue. Using a queue makes the crawl breadth-first, which avoids disappearing into one site.',
+          'Three details show experience. Hash each page’s content so duplicates and unchanged pages are skipped. Assign downloaders by domain so every site is fetched at a polite rate. And remember that the web is the source of truth: a lost page can be fetched again, so expensive durability buys nothing.',
+        ],
+        figure: 'crawler',
+        cardIds: ['crawler-design'],
+      },
+      {
+        heading: 'A top-sellers feature',
+        paragraphs: [
+          'The interesting part is the questions: per category or site-wide, how fresh, over what period, at what scale. Once you learn that an hour of staleness is fine, the design becomes simple.',
+          'Purchases accumulate in a store. A periodic batch job — Apache Spark is the usual tool — aggregates them into a small table of top sellers per category, which web servers read through a cache. The ranking is computed once and read millions of times.',
+          '“Over what period?” has an elegant answer: count every sale, but multiply each by e^(−λt), where t is its age. Recent sales dominate, old ones fade smoothly, and there is no arbitrary cut-off.',
+        ],
+        figure: 'decay',
+        cardIds: ['top-sellers-design'],
+      },
+      {
+        heading: 'A search engine',
+        paragraphs: [
+          'Scanning every document for a keyword at query time is impossible at web scale. Search engines precompute an inverted index: for each keyword, the list of documents that contain it, already sorted by relevance.',
+          'Relevance needs signals. TF-IDF says a word matters to a document if it appears often there and rarely elsewhere. PageRank says a page linked from many important pages is probably useful, and treats the link text as extra keywords. Position, titles and headings are further signals.',
+          'At scale the index is sharded. Partition it by document and load is even, but every query must ask every shard and merge the answers. Partition it by keyword and most queries touch one shard, but a suddenly popular word overloads the shard that owns it.',
+        ],
+        figure: 'inverted-index',
+        cardIds: ['search-design'],
+      },
+    ],
+  },
 ];

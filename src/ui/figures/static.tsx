@@ -125,3 +125,40 @@ export function UrlShortenerFigure() {
     </Frame>
   );
 }
+
+export function ReservationFigure() {
+  return (
+    <Frame height={206} label="Web servers read availability through a cache and write bookings to a primary database that is synchronously copied to a hot standby. Confirmation messages go through a queue to SMS workers.">
+      <Box x={118} y={4} label="Load balancer" />
+      <Arrow x1={160} y1={42} x2={160} y2={56} />
+      <Box x={118} y={56} label="Web servers" sub="stateless" tone="good" />
+      <Arrow x1={202} y1={75} x2={232} y2={75} />
+      <Box x={232} y={56} label="Queue" sub="SMS jobs" tone="info" />
+      <Arrow x1={274} y1={94} x2={274} y2={108} />
+      <Box x={232} y={108} label="SMS workers" />
+      <Arrow x1={160} y1={94} x2={160} y2={108} />
+      <Box x={118} y={108} label="Cache" sub="availability" tone="good" />
+      <Arrow x1={150} y1={146} x2={108} y2={160} label="book" />
+      <Cyl x={50} y={156} w={96} label="Primary" sub="bookings" tone="info" />
+      <Arrow x1={146} y1={180} x2={186} y2={180} tone="good" label="sync" />
+      <Cyl x={186} y={156} w={104} label="Hot standby" sub="has every booking" tone="good" />
+    </Frame>
+  );
+}
+
+export function CrawlerFigure() {
+  return (
+    <Frame height={172} label="A queue of URLs feeds page downloaders hashed by domain. Pages and their content hashes are stored. Extracted URLs are normalized, filtered and fed back into the queue.">
+      <Box x={232} y={4} label="URL filter" sub="stop-list" />
+      <Arrow x1={232} y1={26} x2={62} y2={66} dashed tone="info" label="new URLs" />
+      <Box x={4} y={66} label="URL queue" sub="breadth-first" tone="info" />
+      <Arrow x1={88} y1={85} x2={118} y2={85} />
+      <Box x={118} y={66} label="Downloaders" sub="hashed by domain" tone="good" />
+      <Arrow x1={202} y1={85} x2={232} y2={85} />
+      <Box x={232} y={66} label="Extract URLs" sub="normalize" />
+      <Arrow x1={274} y1={66} x2={274} y2={42} />
+      <Arrow x1={160} y1={104} x2={160} y2={120} />
+      <Cyl x={104} y={120} w={112} label="Page storage" sub="pages + content hashes" />
+    </Frame>
+  );
+}

@@ -249,4 +249,32 @@ export const CARDS: ConceptCard[] = [
     insight: 'This is not the only solution. They want your thought process and how you collaborate, not the “real” architecture.',
     source: 'Kane, slides 90–93, 121',
   },
+  {
+    id: 'reservation-design',
+    title: 'Reservation system design',
+    points: ['Three records: Reservation (customer, restaurant, time slot, party size), Restaurant (table layout, walk-in holdback, hours), Customer (contact, preferences).', 'Load balancer → stateless web servers → cache → distributed store, plus a separate fleet for SMS notifications.', 'Browsing availability can be cached; taking a slot must be one consistent write.'],
+    insight: 'Sketch the data while you think about the experience — it shows early what must be consistent and what may be stale.',
+    source: 'Kane, slides 102–111',
+  },
+  {
+    id: 'crawler-design',
+    title: 'Web crawler design',
+    points: ['A queue of URLs drives a breadth-first crawl; new links loop back into the queue.', 'Page downloaders are hashed by domain so each site is rate-limited politely.', 'Content hashes detect duplicates; a URL filter / stop-list keeps junk out; pages go to distributed storage.'],
+    insight: 'Not customer-facing, so work backwards from requirements — and match durability to the fact that a lost page can be fetched again.',
+    source: 'Kane, slides 112–121',
+  },
+  {
+    id: 'top-sellers-design',
+    title: 'Top-sellers design',
+    points: ['Purchases → periodic batch job (e.g. Apache Spark) → small top-sellers store → distributed cache → web servers.', 'Weight purchases by e^(−λt) so older sales count less, instead of a hard time window.', 'Spark is for batch analytics, not for serving requests (not OLTP).'],
+    insight: 'When data changes slowly and is read constantly, compute once and serve many times. The interview is won in the clarifying questions.',
+    source: 'Kane, slides 62–65 and 122–131',
+  },
+  {
+    id: 'search-design',
+    title: 'Search engine design',
+    points: ['Forward index: document → keywords. Inverted index: keyword → documents and positions — what a query needs.', 'TF-IDF: a word matters to a document if it is frequent there and rare everywhere else.', 'PageRank: inbound links from important pages signal quality; anchor text acts as extra keywords.'],
+    insight: 'Document-partitioned indexes stay balanced but every query hits every shard; keyword-partitioned ones are cheap to query but go hot. Say which you chose and why.',
+    source: 'Kane, slides 53–59 and 140–145',
+  },
 ];

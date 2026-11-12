@@ -6,11 +6,12 @@ run a simulated day of traffic through it, and watch what breaks.
 - **Campaign (9 levels):** grow one product from a single server to three regions —
   vertical scaling, splitting the database, load balancing, caching, replicas and failover,
   CDN and object storage, sharding, message queues, multi-region.
-- **Interview case studies (3):** URL shortener, YouTube, Netflix. Each one is played as
+- **Interview case studies (7):** URL shortener, restaurant reservations, web crawler,
+  top-sellers, YouTube, search engine, Netflix. Each one is played as
   clarify requirements → estimate → design → survive the incidents → real-world debrief.
 - **Learning loop:** post-mortem after every failed run, a quiz after every win, and a
-  Codex of 35 concept cards with a "senior insight" each.
-- **Learn tab:** 8 subjects covering all the material, built around 24 diagrams — 16 of them
+  Codex of 39 concept cards with a "senior insight" each.
+- **Learn tab:** 9 subjects covering all the material, built around 28 diagrams — 18 of them
   interactive (change a value, see the effect). Every Codex card links to its full explanation,
   and every level brief opens with its concept diagram.
 
