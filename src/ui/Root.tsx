@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CAMPAIGN, CASES, findCampaignLevel, findCase, findTopic, topicForCard } from '../content';
-import type { Level, TopicId } from '../content/types';
-import { loadProgress, recordWin, saveProgress, starsFor, type Progress } from '../state/progress';
+import type { Level, TrackId } from '../content/types';
+import { loadProgress, quizProgressId, recordWin, saveProgress, starsFor, type Progress } from '../state/progress';
 import { LevelScreen } from './level/LevelScreen';
 import { useScrollTopOn } from './primitives/hooks';
 import { OpenCardTopicContext } from './primitives/nav';
@@ -17,7 +17,7 @@ type View =
   | { name: 'caseLevel'; caseId: string };
 
 /** A Learn subject shown on top of the current view, so opening it never loses what is underneath. */
-type TopicOverlay = { topicId: TopicId; focusSection: number | null };
+type TopicOverlay = { topicId: string; focusSection: number | null };
 
 const MAP: View = { name: 'map' };
 const FIRST_LEVEL = CAMPAIGN[0];
@@ -37,6 +37,8 @@ export function Root() {
   const [progress, setProgress] = useState<Progress>(loadProgress);
   const [view, setView] = useState<View>(() => initialView(progress));
   const [overlay, setOverlay] = useState<TopicOverlay | null>(null);
+  /** The subject shown on the Learn tab; remembered while the app is open. */
+  const [learnTrack, setLearnTrack] = useState<TrackId>('system-design');
   const scrollBeforeOverlay = useRef(0);
   useScrollTopOn(JSON.stringify(view));
 
@@ -74,7 +76,7 @@ export function Root() {
             onToggleUnlockAll={() => update({ ...progress, unlockAll: !progress.unlockAll })} />
         );
       case 'learn':
-        return <LearnScreen onGoTab={goTab} onOpenTopic={(topicId) => openOverlay({ topicId, focusSection: null })} />;
+        return <LearnScreen trackId={learnTrack} progress={progress} onSelectTrack={setLearnTrack} onGoTab={goTab} onOpenTopic={(topicId) => openOverlay({ topicId, focusSection: null })} />;
       case 'codex':
         return <CodexScreen unlocked={progress.cards} onGoTab={goTab} />;
       case 'level': {
@@ -110,9 +112,19 @@ export function Root() {
   return (
     <OpenCardTopicContext.Provider value={openCardTopic}>
       <div hidden={overlay !== null}>{renderView()}</div>
-      {overlay !== null && (
-        <TopicScreen topic={findTopic(overlay.topicId)} focusSection={overlay.focusSection} onBack={() => setOverlay(null)} onPractice={canPractice ? practice : null} />
-      )}
+      {overlay !== null && <TopicOverlayScreen overlay={overlay} progress={progress} onUpdate={update} onBack={() => setOverlay(null)} onPractice={canPractice ? practice : null} />}
     </OpenCardTopicContext.Provider>
+  );
+}
+
+type TopicOverlayScreenProps = { overlay: TopicOverlay; progress: Progress; onUpdate: (next: Progress) => void; onBack: () => void; onPractice: ((level: Level) => void) | null };
+
+function TopicOverlayScreen({ overlay, progress, onUpdate, onBack, onPractice }: TopicOverlayScreenProps) {
+  const topic = findTopic(overlay.topicId);
+  const quizId = quizProgressId(topic.id);
+  const cardIds = topic.sections.flatMap((section) => section.cardIds);
+  return (
+    <TopicScreen topic={topic} focusSection={overlay.focusSection} quizBestStars={starsFor(progress, quizId)}
+      onQuizPassed={(stars) => onUpdate(recordWin(progress, quizId, stars, cardIds))} onBack={onBack} onPractice={onPractice} />
   );
 }

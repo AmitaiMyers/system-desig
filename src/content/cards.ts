@@ -3,7 +3,7 @@
 
 import type { ConceptCard } from './types';
 
-export const CARDS: ConceptCard[] = [
+export const SYSTEM_DESIGN_CARDS: ConceptCard[] = [
   {
     id: 'single-server',
     title: 'Single-server design',

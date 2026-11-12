@@ -1,5 +1,5 @@
 // Two of the top-level places: the Map (campaign + case studies) and the Codex (concept cards).
-import { CAMPAIGN, CARDS, CASE_PREREQUISITE, CASES, findCampaignLevel } from '../../content';
+import { CAMPAIGN, CARDS, CASE_PREREQUISITE, CASES, findCampaignLevel, findCard, TRACKS } from '../../content';
 import { starsFor, type Progress } from '../../state/progress';
 import { Stars } from '../primitives/controls';
 import { Icon, type IconName } from '../primitives/Icon';
@@ -72,14 +72,22 @@ export function MapScreen({ progress, onPlayLevel, onPlayCase, onGoTab, onToggle
 }
 
 export function CodexScreen({ unlocked, onGoTab }: { unlocked: string[]; onGoTab: (tab: HomeTab) => void }) {
-  const open = CARDS.filter((card) => unlocked.includes(card.id));
-  const locked = CARDS.filter((card) => !unlocked.includes(card.id));
   return (
     <Screen title="Codex" onBack={null} footer={<TabBar tabs={HOME_TABS} current="codex" onGo={onGoTab} />}>
-      <p className="muted">{open.length} of {CARDS.length} concepts unlocked. Beat levels to unlock more. Each card links to its full explanation in Learn.</p>
-      {open.map((card) => <CardView key={card.id} card={card} />)}
-      {locked.length > 0 && <h3>Locked</h3>}
-      <ul className="strip strip-wrap">{locked.map((card) => <li key={card.id} className="chip"><Icon name="lock" size={14} /> {card.title}</li>)}</ul>
+      <p className="muted">{unlocked.length} of {CARDS.length} concepts unlocked. Beat levels and pass Learn quizzes to unlock more. Each card links to its full explanation.</p>
+      {TRACKS.map((track) => {
+        const cards = track.topics.flatMap((topic) => topic.sections.flatMap((section) => section.cardIds)).map(findCard);
+        const open = cards.filter((card) => unlocked.includes(card.id));
+        return (
+          <section key={track.id} className="stack">
+            <h2>{track.title} <small>{open.length} / {cards.length}</small></h2>
+            {open.map((card) => <CardView key={card.id} card={card} />)}
+            {open.length < cards.length && (
+              <ul className="strip strip-wrap">{cards.filter((card) => !open.includes(card)).map((card) => <li key={card.id} className="chip"><Icon name="lock" size={14} /> {card.title}</li>)}</ul>
+            )}
+          </section>
+        );
+      })}
     </Screen>
   );
 }

@@ -3,11 +3,12 @@
 
 import type { Topic } from './types';
 
-export const TOPICS: Topic[] = [
+export const SYSTEM_DESIGN_TOPICS: Topic[] = [
   {
     id: 'scaling',
     title: 'Scaling the web tier',
     summary: 'From one box to a fleet: vertical vs horizontal scaling, load balancers, and why spare capacity is not waste.',
+    quiz: [],
     sections: [
       {
         heading: 'From one box to a fleet',
@@ -54,6 +55,7 @@ export const TOPICS: Topic[] = [
     id: 'database',
     title: 'Keeping the database alive',
     summary: 'Standbys, replicas and replication lag: what happens to your data and your uptime when the primary dies.',
+    quiz: [],
     sections: [
       {
         heading: 'Failover: cold, warm, hot',
@@ -82,6 +84,7 @@ export const TOPICS: Topic[] = [
     id: 'sharding',
     title: 'Sharding and data models',
     summary: 'Splitting data across many primaries, choosing a shard key, denormalizing, and the CAP trade-off.',
+    quiz: [],
     sections: [
       {
         heading: 'Sharding and the shard key',
@@ -120,6 +123,7 @@ export const TOPICS: Topic[] = [
     id: 'caching',
     title: 'Caching',
     summary: 'Answer repeated reads from memory, survive a cold cache, and decide what to evict.',
+    quiz: [],
     sections: [
       {
         heading: 'What a cache buys you',
@@ -157,6 +161,7 @@ export const TOPICS: Topic[] = [
     id: 'delivery',
     title: 'Delivering bytes',
     summary: 'CDNs, object storage, the bandwidth bill, adaptive video — and when to build your own CDN.',
+    quiz: [],
     sections: [
       {
         heading: 'Content delivery networks',
@@ -203,6 +208,7 @@ export const TOPICS: Topic[] = [
     id: 'async',
     title: 'Doing work later',
     summary: 'Message queues, backlog and worker sizing, and the video upload pipeline built on them.',
+    quiz: [],
     sections: [
       {
         heading: 'Message queues',
@@ -240,6 +246,7 @@ export const TOPICS: Topic[] = [
     id: 'resilience',
     title: 'Surviving failure',
     summary: 'What can fail, how regions and geo-routing contain it, what an SLA really promises, and why to break things on purpose.',
+    quiz: [],
     sections: [
       {
         heading: 'Things that can fail',
@@ -285,6 +292,7 @@ export const TOPICS: Topic[] = [
     id: 'interview',
     title: 'The interview itself',
     summary: 'How to run a system design interview: clarify, estimate, sketch, and defend — with a worked URL shortener.',
+    quiz: [],
     sections: [
       {
         heading: 'Clarify first, then work backwards',
@@ -330,6 +338,7 @@ export const TOPICS: Topic[] = [
     id: 'designs',
     title: 'Classic designs, worked',
     summary: 'Four interview classics from start to finish: reservations, a web crawler, top-sellers and a search engine.',
+    quiz: [],
     sections: [
       {
         heading: 'A restaurant reservation system',

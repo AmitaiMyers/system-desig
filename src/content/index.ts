@@ -1,10 +1,12 @@
 import { CAMPAIGN } from './campaign';
-import { CARDS } from './cards';
+import { SYSTEM_DESIGN_CARDS } from './cards';
 import { CASES } from './cases';
-import { TOPICS } from './topics';
-import type { CaseStudy, ConceptCard, Level, Topic, TopicId } from './types';
+import { LESSON_CARDS, TOPICS, TRACKS } from './tracks';
+import type { CaseStudy, ConceptCard, Level, Topic, Track, TrackId } from './types';
 
-export { CAMPAIGN, CARDS, CASES, TOPICS };
+export const CARDS: ConceptCard[] = [...SYSTEM_DESIGN_CARDS, ...LESSON_CARDS];
+
+export { CAMPAIGN, CASES, TOPICS, TRACKS };
 
 /** Campaign level that must be beaten before each case study opens. */
 export const CASE_PREREQUISITE: Record<string, string> = {
@@ -35,7 +37,7 @@ export function findCard(id: string): ConceptCard {
   return card;
 }
 
-export function findTopic(id: TopicId): Topic {
+export function findTopic(id: string): Topic {
   const topic = TOPICS.find((t) => t.id === id);
   if (topic === undefined) throw new Error(`Unknown topic "${id}"`);
   return topic;
@@ -54,4 +56,16 @@ export function topicForCard(cardId: string): { topic: Topic; sectionIndex: numb
 export function levelsForTopic(topic: Topic): Level[] {
   const cardIds = topic.sections.flatMap((section) => section.cardIds);
   return [...CAMPAIGN, ...CASES.map((c) => c.level)].filter((level) => level.cardIds.some((id) => cardIds.includes(id)));
+}
+
+export function findTrack(id: TrackId): Track {
+  const track = TRACKS.find((t) => t.id === id);
+  if (track === undefined) throw new Error(`Unknown track "${id}"`);
+  return track;
+}
+
+export function trackForTopic(topic: Topic): Track {
+  const track = TRACKS.find((t) => t.topics.includes(topic));
+  if (track === undefined) throw new Error(`Topic "${topic.id}" belongs to no track`);
+  return track;
 }

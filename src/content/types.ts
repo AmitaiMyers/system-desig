@@ -86,20 +86,54 @@ export type ConceptCard = {
   source: string;
 };
 
-export type TopicId = 'scaling' | 'database' | 'sharding' | 'caching' | 'delivery' | 'async' | 'resilience' | 'interview' | 'designs';
+export type FigureTone = 'plain' | 'good' | 'bad' | 'warn' | 'info' | 'muted';
+
+/** A node of a data-described diagram, placed on a grid (column and row are zero-based). */
+export type DiagramNodeSpec = {
+  id: string;
+  label: string;
+  sub: string | null;
+  shape: 'box' | 'store';
+  tone: FigureTone;
+  col: number;
+  row: number;
+  /** How many grid columns the node covers. */
+  span: number;
+};
+
+export type DiagramEdgeSpec = { from: string; to: string; label: string | null; tone: FigureTone; dashed: boolean };
+
+/** One scenario of a diagram: what is drawn, and one sentence saying what it means. */
+export type DiagramState = { name: string; readout: string; cols: number; nodes: DiagramNodeSpec[]; edges: DiagramEdgeSpec[] };
+
+/** A diagram described as data. With several states the reader can switch between scenarios. */
+export type StateDiagram = { states: DiagramState[] };
+
+export type TrackId = 'system-design' | 'aws' | 'microservices' | 'kubernetes' | 'postgresql' | 'redis' | 'kafka' | 'pytorch' | 'monitoring';
 
 export type TopicSection = {
   heading: string;
   paragraphs: string[];
-  figure: FigureId | null;
+  /** A hand-drawn figure by id, a data-described diagram, or nothing. */
+  figure: FigureId | StateDiagram | null;
   /** Concept cards this section explains in depth. */
   cardIds: string[];
 };
 
 /** One subject of the Learn tab: the full material behind a group of concept cards. */
 export type Topic = {
-  id: TopicId;
+  id: string;
   title: string;
   summary: string;
   sections: TopicSection[];
+  /** Passing it earns stars and unlocks the topic's concept cards. Empty when levels do that job instead. */
+  quiz: QuizQuestion[];
+};
+
+/** A whole subject on the Learn tab (System design, Kafka, …). */
+export type Track = {
+  id: TrackId;
+  title: string;
+  summary: string;
+  topics: Topic[];
 };

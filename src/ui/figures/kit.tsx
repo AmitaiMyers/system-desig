@@ -1,8 +1,9 @@
 // Drawing kit for the learning diagrams: a 320-unit-wide SVG canvas and a few shapes.
 // Colours come from the tone classes in styles.css, so diagrams follow the design tokens.
 import type { ReactNode } from 'react';
+import type { FigureTone } from '../../content/types';
 
-export type Tone = 'plain' | 'good' | 'bad' | 'warn' | 'info' | 'muted';
+export type Tone = FigureTone;
 export const WIDTH = 320;
 const ARROW_HEAD = 5;
 
@@ -17,11 +18,21 @@ export function Frame({ height, label, children }: { height: number; label: stri
 
 type ShapeProps = { x: number; y: number; w?: number; h?: number; label: string; sub?: string; tone?: Tone };
 
-function ShapeText({ cx, cy, label, sub }: { cx: number; cy: number; label: string; sub?: string }) {
+const LABEL_CHAR_WIDTH = 6.3;
+const SUB_CHAR_WIDTH = 4.9;
+const TEXT_PADDING = 8;
+
+/** Text longer than the shape is squeezed to fit instead of spilling out of it. */
+function fitted(text: string, charWidth: number, width: number): { textLength?: number; lengthAdjust?: 'spacingAndGlyphs' } {
+  const available = width - TEXT_PADDING;
+  return text.length * charWidth > available ? { textLength: available, lengthAdjust: 'spacingAndGlyphs' } : {};
+}
+
+function ShapeText({ cx, cy, width, label, sub }: { cx: number; cy: number; width: number; label: string; sub?: string }) {
   return (
     <>
-      <text className="fig-label" x={cx} y={sub === undefined ? cy + 4 : cy - 2} textAnchor="middle">{label}</text>
-      {sub !== undefined && <text className="fig-sub" x={cx} y={cy + 11} textAnchor="middle">{sub}</text>}
+      <text className="fig-label" x={cx} y={sub === undefined ? cy + 4 : cy - 2} textAnchor="middle" {...fitted(label, LABEL_CHAR_WIDTH, width)}>{label}</text>
+      {sub !== undefined && <text className="fig-sub" x={cx} y={cy + 11} textAnchor="middle" {...fitted(sub, SUB_CHAR_WIDTH, width)}>{sub}</text>}
     </>
   );
 }
@@ -31,7 +42,7 @@ export function Box({ x, y, w = 84, h = 38, label, sub, tone = 'plain' }: ShapeP
   return (
     <g className={`fig-shape tone-${tone}`}>
       <rect x={x} y={y} width={w} height={h} rx={8} />
-      <ShapeText cx={x + w / 2} cy={y + h / 2} label={label} sub={sub} />
+      <ShapeText cx={x + w / 2} cy={y + h / 2} width={w} label={label} sub={sub} />
     </g>
   );
 }
@@ -42,7 +53,7 @@ export function Cyl({ x, y, w = 76, h = 46, label, sub, tone = 'plain' }: ShapeP
   return (
     <g className={`fig-shape tone-${tone}`}>
       <path d={`M${x} ${y + ry}v${h - 2 * ry}a${w / 2} ${ry} 0 0 0 ${w} 0v${-(h - 2 * ry)}a${w / 2} ${ry} 0 0 0 ${-w} 0a${w / 2} ${ry} 0 0 0 ${w} 0`} />
-      <ShapeText cx={x + w / 2} cy={y + h / 2 + 4} label={label} sub={sub} />
+      <ShapeText cx={x + w / 2} cy={y + h / 2 + 4} width={w} label={label} sub={sub} />
     </g>
   );
 }

@@ -1,9 +1,10 @@
 // Registry of every diagram, so content can refer to one by id.
 import type { ReactNode } from 'react';
-import type { FigureId } from '../../content/types';
+import type { FigureId, StateDiagram } from '../../content/types';
 import { CapLab, EvolveLab, FailoverLab, LatencyCurveLab, NPlusOneLab, ScaleOutLab, ShardsLab } from './labsScaling';
 import { DecayLab, InvertedIndexLab } from './labsDesigns';
 import { AbrLab, BacklogLab, CacheLab, CdnLab, EgressCostLab, EstimatorLab, LruLab, NinesLab, RegionsLab } from './labsSystems';
+import { StateDiagramView } from './StateDiagramView';
 import { BlastRadiusFigure, CrawlerFigure, DenormalizeFigure, InterviewFlowFigure, ObjectStorageFigure, QueueFigure, ReplicationFigure, ReservationFigure, UploadPipelineFigure, UrlShortenerFigure } from './static';
 
 type Entry = { render: () => ReactNode; interactive: boolean };
@@ -51,4 +52,9 @@ export function Figure({ id }: { id: FigureId }) {
       <Body />
     </figure>
   );
+}
+
+/** A section's figure is either a hand-drawn one (by id) or a diagram described as data. */
+export function SectionFigure({ figure }: { figure: FigureId | StateDiagram }) {
+  return typeof figure === 'string' ? <Figure id={figure} /> : <StateDiagramView diagram={figure} />;
 }

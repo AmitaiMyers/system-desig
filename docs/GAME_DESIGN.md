@@ -106,6 +106,13 @@ All tunable numbers live in `src/engine/catalog.ts`.
 - **Quiz**: 2–4 multiple-choice questions per level, each with an explanation.
 - **Codex**: all unlocked cards, for review.
 
+## 7b. Learn subjects
+
+Nine subjects: System design (9 multi-section topics plus 5 distributed-systems lessons) and
+eight lesson-based subjects — AWS, Microservices, Kubernetes, PostgreSQL, Redis, Kafka,
+PyTorch, Monitoring — with 5 lessons each. A lesson = text, a diagram with switchable
+scenarios, a concept card, and a two-question quiz worth up to 3 stars.
+
 ## 8. Tests
 
 `tests/levels.test.ts` keeps the game balanced: every level must fail with its starting

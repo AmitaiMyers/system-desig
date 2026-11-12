@@ -348,3 +348,12 @@ div.node.node-troubled:not(.load-red) { border-color: var(--amber); }
 .fold .card { background: var(--bg-raised); }
 .tile-meta { font: var(--type-overline); color: var(--blue); margin-top: 2px; }
 .card-deeper { align-self: flex-start; }
+
+/* ---------- Learn: subjects and quizzes ---------- */
+.subject-strip { margin: 0 calc(-1 * var(--space-4)); padding: 0 var(--space-4) 2px; }
+.subject { flex: none; min-height: 40px; padding: 0 var(--space-3); border-radius: 999px; background: var(--bg-surface); border: 1.5px solid var(--border-strong); font: var(--type-label); white-space: nowrap; transition: background var(--state), color var(--state), border-color var(--state), transform var(--press); }
+.subject:active { transform: scale(0.96); }
+.subject-on { background: var(--mint); border-color: var(--mint); color: var(--mint-ink); }
+.quiz-start { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.quiz-best { font: var(--type-label); color: var(--text-muted); }
+.content h2 small { font: var(--type-caption); margin-left: var(--space-2); }

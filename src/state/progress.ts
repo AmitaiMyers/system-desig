@@ -38,3 +38,15 @@ export function recordWin(progress: Progress, levelId: string, stars: number, ca
     cards: [...new Set([...progress.cards, ...cardIds])],
   };
 }
+
+/** Progress key for a Learn topic's quiz (levels use their own ids). */
+export function quizProgressId(topicId: string): string {
+  return `quiz:${topicId}`;
+}
+
+/** 3 stars for a perfect quiz, 2 for at least half, 1 for anything right, 0 otherwise. */
+export function quizStars(correct: number, total: number): number {
+  if (correct === total) return 3;
+  if (correct * 2 >= total) return 2;
+  return correct > 0 ? 1 : 0;
+}

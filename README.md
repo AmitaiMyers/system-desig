@@ -10,10 +10,12 @@ run a simulated day of traffic through it, and watch what breaks.
   top-sellers, YouTube, search engine, Netflix. Each one is played as
   clarify requirements → estimate → design → survive the incidents → real-world debrief.
 - **Learning loop:** post-mortem after every failed run, a quiz after every win, and a
-  Codex of 39 concept cards with a "senior insight" each.
-- **Learn tab:** 9 subjects covering all the material, built around 28 diagrams — 18 of them
-  interactive (change a value, see the effect). Every Codex card links to its full explanation,
-  and every level brief opens with its concept diagram.
+  Codex of concept cards with a "senior insight" each.
+- **Learn tab, 9 subjects:** System design (including distributed systems), AWS, Microservices,
+  Kubernetes, PostgreSQL, Redis, Kafka, PyTorch and Monitoring (Prometheus, Grafana, Datadog).
+  Every topic is built around a diagram, most of them interactive, and has a concept card.
+  The lesson-style topics end in a short scored quiz that earns stars and unlocks the card.
+- **Codex:** 84 concept cards grouped by subject; each links to its full explanation.
 
 ## Run it
 
@@ -41,6 +43,9 @@ tests/         Engine unit tests and balance tests (every level must fail as giv
                be winnable with 3 stars, and reject the shortcut it teaches against).
 ```
 
+Adding a lesson is a content change too: add a `lesson({...})` entry to a file in
+`src/content/tracks/` (text, diagram states, card and quiz in one place).
+
 Adding a level is a content change: add an entry in `src/content/campaign.ts` (or
 `cases.ts`) and a reference solution in `tests/levels.test.ts`.
 
@@ -55,3 +60,8 @@ The simulation model is described in `docs/GAME_DESIGN.md`.
 
 The numbers (requests per second per server, prices, latencies) are rounded, plausible
 figures chosen for play. They are not benchmarks.
+
+The lessons outside System design (AWS, Microservices, Kubernetes, PostgreSQL, Redis, Kafka,
+PyTorch, Monitoring) and the distributed-systems lessons were written from general knowledge
+of the official documentation named on each card, not from supplied course material. Check
+version-specific details against the current docs.

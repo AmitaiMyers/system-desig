@@ -3,8 +3,7 @@
 import { describe, expect, test } from 'vitest';
 import { CAMPAIGN } from '../src/content/campaign';
 import { CASES } from '../src/content/cases';
-import { CARDS } from '../src/content/cards';
-import { TOPICS } from '../src/content/topics';
+import { CARDS, TOPICS, TRACKS } from '../src/content';
 import type { Level } from '../src/content/types';
 import { evaluate } from '../src/engine/score';
 import { simulate } from '../src/engine/simulate';
@@ -150,9 +149,11 @@ describe.each(ALL_LEVELS.map((level) => [level.id, level] as const))('level %s',
   });
 });
 
-test('every concept card is unlocked by some level', () => {
-  const used = new Set(ALL_LEVELS.flatMap((l) => l.cardIds));
-  expect(CARDS.filter((c) => !used.has(c.id)).map((c) => c.id)).toEqual([]);
+test('every concept card can be unlocked: by a level, or by the quiz of the topic that explains it', () => {
+  const byLevels = ALL_LEVELS.flatMap((l) => l.cardIds);
+  const byQuizzes = TOPICS.filter((topic) => topic.quiz.length > 0).flatMap((topic) => topic.sections.flatMap((section) => section.cardIds));
+  const unlockable = new Set([...byLevels, ...byQuizzes]);
+  expect(CARDS.filter((c) => !unlockable.has(c.id)).map((c) => c.id)).toEqual([]);
 });
 
 test('case studies have well-formed interview content', () => {
@@ -165,4 +166,36 @@ test('case studies have well-formed interview content', () => {
 test('every concept card is explained by exactly one Learn section', () => {
   const explained = TOPICS.flatMap((topic) => topic.sections.flatMap((section) => section.cardIds));
   expect([...explained].sort()).toEqual(CARDS.map((c) => c.id).sort());
+});
+
+describe('Learn tracks', () => {
+  test('topic and card ids are unique', () => {
+    const duplicates = (ids: string[]) => ids.filter((id, index) => ids.indexOf(id) !== index);
+    expect(duplicates(TOPICS.map((t) => t.id))).toEqual([]);
+    expect(duplicates(CARDS.map((c) => c.id))).toEqual([]);
+  });
+
+  test.each(TRACKS.map((track) => [track.id, track] as const))('track %s has topics', (_id, track) => {
+    expect(track.topics.length).toBeGreaterThan(0);
+  });
+
+  const lessons = TOPICS.filter((topic) => topic.quiz.length > 0);
+  test.each(lessons.map((topic) => [topic.id, topic] as const))('lesson %s is well-formed', (_id, topic) => {
+    for (const question of topic.quiz) {
+      expect(question.options[question.answerIndex]).toBeDefined();
+      expect(new Set(question.options).size).toBe(question.options.length);
+    }
+    for (const section of topic.sections) {
+      expect(section.paragraphs.length).toBeGreaterThan(0);
+      if (section.figure === null || typeof section.figure === 'string') continue;
+      for (const state of section.figure.states) {
+        const ids = state.nodes.map((n) => n.id);
+        expect(new Set(ids).size, `duplicate node ids in "${state.name}"`).toBe(ids.length);
+        for (const node of state.nodes) expect(node.col + node.span, `node "${node.id}" leaves the grid in "${state.name}"`).toBeLessThanOrEqual(state.cols);
+        for (const edge of state.edges) expect(ids, `edge ${edge.from}→${edge.to} in "${state.name}"`).toEqual(expect.arrayContaining([edge.from, edge.to]));
+        const cells = state.nodes.flatMap((n) => Array.from({ length: n.span }, (_, i) => `${n.col + i},${n.row}`));
+        expect(new Set(cells).size, `overlapping nodes in "${state.name}"`).toBe(cells.length);
+      }
+    }
+  });
 });

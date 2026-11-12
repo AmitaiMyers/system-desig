@@ -241,6 +241,14 @@ src/ui/
   it. A test enforces that each card belongs to exactly one section.
 - **Missions:** every level brief opens with its concept diagram and a link to the subject.
 - A subject opens *on top of* the current screen, so reading one mid-level loses nothing.
+- **Subjects (tracks):** the Learn tab has a subject switcher. System design keeps its
+  multi-section topics; the other subjects are made of *lessons* — one-section topics with a
+  diagram, a concept card and a two-question quiz. Passing a quiz earns stars (shown on the
+  topic tile) and unlocks the card in the Codex, which is grouped by subject.
+- **Data-described diagrams:** lesson diagrams are data (`states` of nodes and edges on a
+  grid, see `src/content/lesson.ts`) drawn by one renderer, `figures/StateDiagramView`.
+  A diagram with several states gets a scenario switcher. This is what makes adding a
+  lesson a content-only change.
 
 ## 6. What was implemented, and what was not
 
